@@ -1,6 +1,7 @@
 {
   "name": "Game in Game",
   "short_name": "GameinGame",
+  "description": "A collection of awesome mini games including Bus, XO, and Guess the Imposter",
   "start_url": "/GameinGame/",
   "display": "standalone",
   "background_color": "#000000",
