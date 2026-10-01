@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة × لعبة - النسخة الرسمية</title>
+
+    <style>
+        :root {
+            --bg-color: #1b120c;
+            --text-color: #fcf6f0;
+            --card-bg: #2d1e15;
+            --btn-bg: #3e2723;
+            --btn-border: #d4a373;
+            --btn-text: #faedcd;
+            --btn-primary-bg: #bc6c25;
+            --btn-primary-text: #ffffff;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f0a07;
+            --text-color: #e3d5ca;
+            --card-bg: #1c1410;
+            --btn-bg: #291c14;
+            --btn-border: #b08968;
+            --btn-text: #f5ebe0;
+            --btn-primary-bg: #dda15e;
+            --btn-primary-text: #281c10;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif, Tahoma, sans-serif;
+            transition: background 0.3s, color 0.3s, border 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle, rgba(212, 163, 115, 0.08) 12%, transparent 12%);
+            background-size: 24px 24px;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            max-height: 800px;
+            background-color: var(--card-bg);
+            border: 4px solid var(--btn-border);
+            border-radius: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--btn-bg);
+            border: 2px solid var(--btn-border);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .logo-area {
+            margin-top: 5px;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-logo {
+            width: 100%;
+            max-width: 120px;
+            height: auto;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+        }
+
+        .screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            flex-grow: 1;
+            gap: 12px;
+            overflow-y: auto;
+            padding-bottom: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px;
+            border: 3px solid var(--btn-border);
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-color-1 { background-color: #bc6c25; border-color: #dda15e; }
+        .btn-color-2 { background-color: #283618; border-color: #606c38; }
+        .btn-color-3 { background-color: #6b2d2c; border-color: #bc4749; }
+        .btn-color-4 { background-color: #1d3557; border-color: #457b9d; }
+
+        .room-input {
+            width: 100%;
+            padding: 11px;
+            border: 3px solid var(--btn-border);
+            border-radius: 14px;
+            font-size: 15px;
+            text-align: center;
+            background-color: var(--btn-bg);
+            color: var(--text-color);
+            outline: none;
+        }
+
+        .room-code-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--btn-primary-bg);
+            background: var(--btn-bg);
+            padding: 6px 14px;
+            border: 2px dashed var(--btn-border);
+            border-radius: 12px;
+            letter-spacing: 3px;
+        }
+
+        .game-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .game-card {
+            background: var(--btn-bg);
+            border: 2.5px solid var(--btn-border);
+            padding: 10px 14px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--btn-text);
+        }
+
+        .game-card:hover {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+        }
+
+        .more-games-badge {
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--btn-border);
+            letter-spacing: 2px;
+            margin-top: 4px;
+            opacity: 0.8;
+            border: 2px dashed var(--btn-border);
+            padding: 6px;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        .settings-box {
+            background: var(--btn-bg);
+            border: 2.5px solid var(--btn-border);
+            padding: 14px;
+            border-radius: 18px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .xo-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 240px;
+            height: 240px;
+            margin: 10px auto;
+        }
+
+        .xo-cell {
+            background: var(--btn-bg);
+            border: 3px solid var(--btn-border);
+            border-radius: 12px;
+            font-size: 36px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: var(--btn-primary-bg);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--btn-bg);
+            padding: 8px 14px;
+            border-radius: 16px;
+            border: 2px solid var(--btn-border);
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .profile-img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--btn-border);
+            object-fit: cover;
+            background-color: #555;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+
+        /* عنصر عرض الرسائل الداخلية بدل الـ alert */
+        .inline-msg {
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 18px;
+            transition: 0.3s;
+        }
+        .text-error { color: #ef4444; }
+        .text-success { color: #4ade80; }
+
+        .footer-text {
+            font-size: 11px;
+            opacity: 0.6;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- زر الدارك واللايت بالإيموجي -->
+        <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">🌙</button>
+
+        <div class="logo-area">
+            <img src="/file_00000000f6e882109c55f649e97ed414.png" alt="لوجو لعبة × لعبة" class="game-logo">
+        </div>
+
+        <!-- 0. شاشة إدخال اليوزر نيم -->
+        <div id="usernameScreen" class="screen">
+            <div style="text-align: center; width: 100%; margin-bottom: 2px;">
+                <h3 style="font-size: 18px; color: var(--btn-primary-bg);">تسجيل دخول ضيف</h3>
+                <p style="font-size: 13px; opacity: 0.8; margin-top: 4px;">اختر الرمز الخاص بك واكتب يوزر نيم بتاعك</p>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 20px; margin: 5px 0;">
+                <div onclick="selectGender('male')" id="genderMaleCard" style="cursor: pointer; border: 3px solid var(--btn-primary-bg); border-radius: 50%; padding: 4px; background: var(--btn-bg); transition: 0.2s;">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="11" fill="#3b82f6" fill-opacity="0.2"/>
+                        <path d="M12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z" fill="#3b82f6"/>
+                        <path d="M4 20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20V21H4V20Z" fill="#3b82f6"/>
+                    </svg>
+                </div>
+
+                <div onclick="selectGender('female')" id="genderFemaleCard" style="cursor: pointer; border: 3px solid transparent; border-radius: 50%; padding: 4px; background: var(--btn-bg); transition: 0.2s;">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="11" fill="#ec4899" fill-opacity="0.2"/>
+                        <path d="M12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z" fill="#ec4899"/>
+                        <path d="M4 20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20V21H4V20Z" fill="#ec4899"/>
+                        <path d="M7 8C6 11 6 15 8 18" stroke="#ec4899" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M17 8C18 11 18 15 16 18" stroke="#ec4899" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="menu-buttons" style="gap: 10px;">
+                <input type="text" id="usernameInput" class="room-input" placeholder="اكتب يوزر نيم بتاعك" maxlength="20">
+                <div id="usernameMsg" class="inline-msg"></div>
+                <button class="btn btn-color-1" onclick="saveGuestUsername()">دخول كضيف</button>
+                <button class="btn btn-color-2" onclick="loginWithGoogle()">تسجيل الدخول بجوجل</button>
+            </div>
+        </div>
+
+        <!-- 1. الشاشة الرئيسية -->
+        <div id="mainMenu" class="screen hidden">
+            <div class="profile-header">
+                <img id="userProfileImg" src="" alt="صورة البروفايل" class="profile-img">
+                <div class="profile-info">
+                    <span style="opacity: 0.7; font-size: 11px;">مرحباً بك</span>
+                    <strong id="displayUsername" style="color: var(--btn-primary-bg); font-size: 14px;">اللاعب</strong>
+                </div>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="btn btn-color-1" onclick="showScreen('roomMenu')">أونلاين (غرف جماعية)</button>
+              
+                <button class="btn btn-color-3" onclick="logoutSession()">تسجيل الخروج</button>
+                <button class="btn btn-color-1" disabled>وضع الذكاء الإصطناعي سيتوفر قريباََ</button>
+
+            </div>
+        </div>
+
+        <!-- 2. شاشة الغرف -->
+        <div id="roomMenu" class="screen hidden">
+            <div class="menu-buttons">
+                <button class="btn btn-color-1" onclick="createRoomLocal()">إنشاء غرفة أونلاين</button>
+                <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+                    <input type="text" id="roomCodeInput" class="room-input" placeholder="اكتب كود الغرفة...">
+                    <div id="roomMsg" class="inline-msg"></div>
+                    <button class="btn btn-color-2" onclick="joinRoomLocal()">انضمام للغرفة</button>
+                </div>
+                <button class="btn btn-color-3" onclick="showScreen('mainMenu')">رجوع للقائمة</button>
+            </div>
+        </div>
+
+        <!-- 3. شاشة اختيار الألعاب -->
+        <div id="gameSelectorMenu" class="screen hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <p style="font-weight: bold; font-size: 14px;" id="modeTitle">اختر اللعبة:</p>
+                <div class="room-code-display" id="displayCode" style="font-size: 13px; padding: 3px 8px;">AB12</div>
+            </div>
+            
+            <div class="game-grid">
+                <div class="game-card" onclick="openGameSettings('أتوبيس كومبليت')"><span>أتوبيس كومبليت</span><span>بدء</span></div>
+                <div class="game-card" onclick="openGameSettings('إكس أو (X/O)')"><span>إكس أو (X/O)</span><span>بدء</span></div>
+                <div class="game-card" onclick="openGameSettings('Guess the Imposter')"><span>Guess the Imposter</span><span>بدء</span></div>
+                <div class="game-card" onclick="openGameSettings('خمن ما أفكر به')"><span>خمن ما أفكر به</span><span>بدء</span></div>
+            </div>
+
+            <div class="more-games-badge">MORE GAMES SOOOON</div>
+
+            <button class="btn btn-color-3" onclick="showScreen('roomMenu')" style="padding: 8px; font-size: 13px; margin-top: 5px;">خروج</button>
+        </div>
+
+        <!-- 4. شاشة إعدادات اللعبة -->
+        <div id="gameSettingsScreen" class="screen hidden">
+            <h3 id="settingsGameTitle" style="font-size: 16px; color: var(--btn-primary-bg);">إعدادات اللعبة</h3>
+            <div class="settings-box" id="dynamicSettingsContent"></div>
+            <div style="display: flex; gap: 8px; width: 100%;">
+                <button class="btn btn-color-3" onclick="showScreen('gameSelectorMenu')" style="padding: 10px;">رجوع</button>
+                <button class="btn btn-color-1" onclick="goToLobby()" style="padding: 10px;">بدء اللعب مباشرة</button>
+            </div>
+        </div>
+
+        <!-- 5. شاشة أتوبيس كومبليت -->
+        <div id="busGameScreen" class="screen hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div style="font-size: 14px; font-weight: bold;">الوقت: <span id="busTimer" style="color: var(--btn-primary-bg);">60</span>ث</div>
+                <div class="room-code-display" id="busLetterDisplay" style="font-size: 18px; padding: 3px 10px;">الحرف: أ</div>
+            </div>
+            <div style="width: 100%; display: flex; flex-direction: column; gap: 6px;">
+                <div class="setting-group"><label>ولد:</label><input type="text" id="busBoy" class="room-input" placeholder="اسم ولد..."></div>
+                <div class="setting-group"><label>بنت:</label><input type="text" id="busGirl" class="room-input" placeholder="اسم بنت..."></div>
+                <div class="setting-group"><label>حيوان:</label><input type="text" id="busAnimal" class="room-input" placeholder="حيوان..."></div>
+                <div class="setting-group"><label>نبات:</label><input type="text" id="busPlant" class="room-input" placeholder="نبات..."></div>
+                <div class="setting-group"><label>جماد:</label><input type="text" id="busObject" class="room-input" placeholder="جماد..."></div>
+                <div class="setting-group"><label>بلد:</label><input type="text" id="busCountry" class="room-input" placeholder="بلد..."></div>
+            </div>
+            <button class="btn btn-color-1" onclick="completeBusGame()" style="padding: 10px;">أتوبيس كومبليت</button>
+        </div>
+
+        <!-- 6. شاشة نتائج أتوبيس كومبليت -->
+        <div id="busResultsScreen" class="screen hidden">
+            <h3 style="color: var(--btn-primary-bg); text-align: center; font-size: 16px;">نتائج الجولة</h3>
+            <div id="busResultsContainer" class="settings-box" style="max-height: 260px; overflow-y: auto; font-size: 13px;"></div>
+            <div style="display: flex; gap: 8px; width: 100%;">
+                <button class="btn btn-color-1" onclick="startBusGame()" style="padding: 8px;">جولة جديدة</button>
+                <button class="btn btn-color-3" onclick="showScreen('gameSelectorMenu')" style="padding: 8px;">الألعاب</button>
+            </div>
+        </div>
+
+        <!-- 7. شاشة إكس أو (X/O) -->
+        <div id="xoGameScreen" class="screen hidden">
+            <div style="font-size: 16px; font-weight: bold; color: var(--btn-primary-bg); text-align: center;">لعبة إكس أو (X/O)</div>
+            <div style="font-size: 14px; font-weight: bold;" id="xoStatusText">دور اللاعب: (X)</div>
+            <div class="xo-board" id="xoBoard">
+                <div class="xo-cell" onclick="makeXOMove(0)"></div>
+                <div class="xo-cell" onclick="makeXOMove(1)"></div>
+                <div class="xo-cell" onclick="makeXOMove(2)"></div>
+                <div class="xo-cell" onclick="makeXOMove(3)"></div>
+                <div class="xo-cell" onclick="makeXOMove(4)"></div>
+                <div class="xo-cell" onclick="makeXOMove(5)"></div>
+                <div class="xo-cell" onclick="makeXOMove(6)"></div>
+                <div class="xo-cell" onclick="makeXOMove(7)"></div>
+                <div class="xo-cell" onclick="makeXOMove(8)"></div>
+            </div>
+            <button class="btn btn-color-4" onclick="resetXOGame()" style="padding: 8px; font-size: 13px;">إعادة الجيم</button>
+            <button class="btn btn-color-3" onclick="showScreen('gameSelectorMenu')" style="padding: 8px; font-size: 13px;">خروج</button>
+        </div>
+
+        <!-- 8. شاشة خمن ما أفكر به -->
+        <div id="guessGameScreen" class="screen hidden">
+            <div style="font-size: 16px; font-weight: bold; color: var(--btn-primary-bg); text-align: center;">خمن الرقم (من 1 إلى 50)</div>
+            <div class="settings-box" style="text-align: center; gap: 8px;">
+                <div style="font-size: 14px;" id="guessFeedbackMsg">أنا أفكر في رقم بين 1 و 50، خمنه!</div>
+                <div style="font-size: 13px; color: #f4a261;">الفرص المتبقية: <span id="guessAttemptsLeft">5</span></div>
+                <input type="number" id="playerGuessInput" class="room-input" placeholder="اكتب رقمك هنا..." min="1" max="50">
+                <div id="guessMsg" class="inline-msg"></div>
+            </div>
+            <div class="menu-buttons" style="gap: 8px;">
+                <button class="btn btn-color-1" onclick="submitGuessNumber()">تخمين الرقم</button>
+                <button class="btn btn-color-3" onclick="showScreen('gameSelectorMenu')" style="padding: 8px; font-size: 13px;">خروج</button>
+            </div>
+        </div>
+
+        <!-- 9. شاشة Guess the Imposter -->
+        <!-- 9. شاشة Guess the Imposter -->
+        <div id="imposterGameScreen" class="screen hidden">
+            <div style="font-size: 16px; font-weight: bold; color: var(--btn-primary-bg); text-align: center;">لعبة المحتال</div>
+            <div class="settings-box" style="text-align: center; gap: 10px;">
+                <div style="font-size: 14px; font-weight: bold;" id="imposterRoleStatus">دورك: جاري كشف السر...</div>
+                <div style="font-size: 13px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px;" id="imposterSecretWord">الكلمة السرية ستظهر هنا...</div>
+                <div id="imposterMsg" class="inline-msg"></div>
+            </div>
+            <div class="menu-buttons" style="gap: 8px;">
+                <button class="btn btn-color-4" onclick="revealImposterRole()">إظهار / إخفاء سري</button>
+                <button class="btn btn-color-3" onclick="startImposterVoting()">بدء التصويت والكشف</button>
+            </div>
+            <button class="btn btn-color-2" onclick="showScreen('gameSelectorMenu')" style="padding: 8px; font-size: 13px;">خروج</button>
+        </div>
+
+        <div class="footer-text">
+            لعبة × لعبة © 2026 - by abdelrhman ahmed
+        </div>
+    </div>
+
+    <!-- سكربت الفايربيس والتطبيق -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxF2jXQRDlHvM9_bcfQ-ZZwz0rHBfRvnk",
+            authDomain: "gameingame-4730f.firebaseapp.com",
+            databaseURL: "https://gameingame-4730f-default-rtdb.firebaseio.com",
+            projectId: "gameingame-4730f",
+            storageBucket: "gameingame-4730f.firebasestorage.app",
+            messagingSenderId: "785978064876",
+            appId: "1:785978064876:web:6072bf26f6e4dac9decac9",
+            measurementId: "G-6860M6GDT2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        let username = "";
+        let userProfilePic = "";
+        let isAI_Mode = false;
+        let currentRoomCode = "";
+        let selectedGameName = "";
+
+        let currentBusLetter = "";
+        let busTimerInterval = null;
+        let busTimeLeft = 60;
+        let totalGameScore = 0;
+        const arabicLetters = ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'];
+
+        let xoBoardState = ["", "", "", "", "", "", "", "", ""];
+        let xoCurrentTurn = "X";
+        let isXOGameActive = true;
+
+        let targetSecretNumber = 25;
+        let guessRemainingAttempts = 5;
+
+        let isPlayerImposter = false;
+        let secretWordList = ["تفاحة", "موبايل", "قهوة", "سيارة", "بحر", "قلم", "شمس", "طيارة", "كتاب", "تلفزيون"];
+        let currentSecretWord = "";
+        let selectedGender = 'male';
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                username = user.displayName || "لاعب رسمي";
+                userProfilePic = user.photoURL || "https://via.placeholder.com/150";
+                setupUserInterface();
+                showScreen('mainMenu');
+            } else {
+                const savedGuest = localStorage.getItem('game_username');
+                if (savedGuest && localStorage.getItem('game_auth_type') === 'guest') {
+                    username = savedGuest;
+                    userProfilePic = localStorage.getItem('game_profile_pic');
+                    setupUserInterface();
+                    showScreen('mainMenu');
+                } else {
+                    showScreen('usernameScreen');
+                }
+            }
+        });
+
+        window.toggleTheme = function() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? '' : 'dark');
+            document.getElementById('themeToggleBtn').innerText = isDark ? '🌙' : '💡';
+        }
+
+        window.showScreen = function(screenId) {
+            const screens = ['usernameScreen', 'mainMenu', 'roomMenu', 'gameSelectorMenu', 'gameSettingsScreen', 'busGameScreen', 'busResultsScreen', 'xoGameScreen', 'guessGameScreen', 'imposterGameScreen'];
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (id === screenId) {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        window.selectGender = function(gender) {
+            selectedGender = gender;
+            const maleCard = document.getElementById('genderMaleCard');
+            const femaleCard = document.getElementById('genderFemaleCard');
+            if (gender === 'male') {
+                maleCard.style.borderColor = 'var(--btn-primary-bg)';
+                femaleCard.style.borderColor = 'transparent';
+            } else {
+                femaleCard.style.borderColor = 'var(--btn-primary-bg)';
+                maleCard.style.borderColor = 'transparent';
+            }
+        }
+
+        window.saveGuestUsername = function() {
+            const inputVal = document.getElementById('usernameInput').value.trim();
+            const msgEl = document.getElementById('usernameMsg');
+            
+            if (inputVal === "") {
+                msgEl.className = "inline-msg text-error";
+                msgEl.innerText = "يجب كتابة اليوزر نيم أولاً!";
+                return;
+            }
+            username = inputVal;
+            if (selectedGender === 'male') {
+                userProfilePic = "data:image/svg+xml;utf8,<svg width='100' height='100' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='12' cy='12' r='11' fill='%23bc6c25'/><path d='M12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z' fill='%23fff'/><path d='M4 20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20V21H4V20Z' fill='%23fff'/></svg>";
+            } else {
+                userProfilePic = "data:image/svg+xml;utf8,<svg width='100' height='100' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='12' cy='12' r='11' fill='%23ec4899'/><path d='M12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z' fill='%23fff'/><path d='M4 20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20V21H4V20Z' fill='%23fff'/></svg>";
+            }
+            
+            localStorage.setItem('game_auth_type', 'guest');
+            localStorage.setItem('game_username', username);
+            localStorage.setItem('game_profile_pic', userProfilePic);
+
+            msgEl.className = "inline-msg text-success";
+            msgEl.innerText = "تم تسجيل الدخول بنجاح!";
+            setTimeout(() => {
+                setupUserInterface();
+                showScreen('mainMenu');
+                msgEl.innerText = "";
+            }, 500);
+        }
+
+        window.loginWithGoogle = function() {
+            signInWithPopup(auth, googleProvider)
+                .then((result) => {
+                    const user = result.user;
+                    username = user.displayName;
+                    userProfilePic = user.photoURL;
+                    localStorage.setItem('game_auth_type', 'google');
+                    setupUserInterface();
+                    showScreen('mainMenu');
+                }).catch((error) => {
+                    const msgEl = document.getElementById('usernameMsg');
+                    msgEl.className = "inline-msg text-error";
+                    msgEl.innerText = "فشل تسجيل الدخول بجوجل (تأكد من إعدادات الفايربيس)";
+                });
+        }
+
+        function setupUserInterface() {
+            document.getElementById('displayUsername').innerText = username;
+            document.getElementById('userProfileImg').src = userProfilePic;
+        }
+
+        window.logoutSession = function() {
+            signOut(auth).then(() => {
+                localStorage.clear();
+                document.getElementById('usernameInput').value = "";
+                showScreen('usernameScreen');
+            });
+        }
+
+        window.createRoomLocal = function() {
+            isAI_Mode = false;
+            const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+            currentRoomCode = randomCode;
+            document.getElementById('displayCode').innerText = randomCode;
+            document.getElementById('modeTitle').innerText = "غرفة أونلاين جديدة:";
+            showScreen('gameSelectorMenu');
+        }
+
+        window.joinRoomLocal = function() {
+            isAI_Mode = false;
+            const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+            const roomMsg = document.getElementById('roomMsg');
+            if(code === "") { 
+                roomMsg.className = "inline-msg text-error";
+                roomMsg.innerText = "اكتب كود الغرفة أولاً!";
+                return; 
+            }
+            roomMsg.innerText = "";
+            currentRoomCode = code;
+            document.getElementById('displayCode').innerText = code;
+            document.getElementById('modeTitle').innerText = "غرفة منضم لها:";
+            showScreen('gameSelectorMenu');
+        }
+
+        window.startAIMode = function() {
+            isAI_Mode = true;
+            currentRoomCode = "";
+            document.getElementById('modeTitle').innerText = "التحدي ضد الذكاء الاصطناعي:";
+            showScreen('gameSelectorMenu');
+        }
+
+        window.openGameSettings = function(gameName) {
+            selectedGameName = gameName;
+            document.getElementById('settingsGameTitle').innerText = `إعدادات: ${gameName}`;
+            const container = document.getElementById('dynamicSettingsContent');
+            container.innerHTML = "";
+
+            if (gameName === 'أتوبيس كومبليت') {
+                container.innerHTML = `<div class="setting-group"><label>نظام الحروف:</label><select class="room-input"><option>كل الحروف (أ - ي)</option></select></div>`;
+            } else if (gameName === 'إكس أو (X/O)') {
+                container.innerHTML = `<div class="setting-group" style="text-align:center;"><p>تبادل الأدوار بين لاعبين</p></div>`;
+            } else if (gameName === 'Guess the Imposter') {
+                container.innerHTML = `<div class="setting-group"><label>عدد المحتالين:</label><select class="room-input"><option>1 محتال</option></select></div>`;
+            } else if (gameName === 'خمن ما أفكر به') {
+                container.innerHTML = `<div class="setting-group"><label>المحاولات:</label><select id="guessAttemptsSelect" class="room-input"><option value="5">5 محاولات</option></select></div>`;
+            }
+            showScreen('gameSettingsScreen');
+        }
+
+        window.goToLobby = function() {
+            if (selectedGameName === 'أتوبيس كومبليت') { totalGameScore = 0; startBusGame(); }
+            else if (selectedGameName === 'إكس أو (X/O)') { startXOGame(); }
+            else if (selectedGameName === 'Guess the Imposter') { startImposterGame(); }
+            else if (selectedGameName === 'خمن ما أفكر به') { startGuessGame(); }
+        }
+
+        window.startBusGame = function() {
+            ['busBoy', 'busGirl', 'busAnimal', 'busPlant', 'busObject', 'busCountry'].forEach(id => document.getElementById(id).value = "");
+            currentBusLetter = arabicLetters[Math.floor(Math.random() * arabicLetters.length)];
+            document.getElementById('busLetterDisplay').innerText = `الحرف: ${currentBusLetter}`;
+            busTimeLeft = 60;
+            document.getElementById('busTimer').innerText = busTimeLeft;
+            showScreen('busGameScreen');
+
+            if (busTimerInterval) clearInterval(busTimerInterval);
+            busTimerInterval = setInterval(() => {
+                busTimeLeft--;
+                document.getElementById('busTimer').innerText = busTimeLeft;
+                if (busTimeLeft <= 0) { clearInterval(busTimerInterval); completeBusGame(); }
+            }, 1000);
+        }
+
+                window.completeBusGame = function() {
+            if (busTimerInterval) clearInterval(busTimerInterval);
+            let roundScore = 0;
+            let resultsHTML = `<p style="font-weight:bold; color:var(--btn-primary-bg);">الحرف: (${currentBusLetter})</p><hr style="margin:4px 0;">`;
+            
+            ['busBoy', 'busGirl', 'busAnimal', 'busPlant', 'busObject', 'busCountry'].forEach(id => {
+                const val = document.getElementById(id).value.trim();
+                
+                // شرط دقيق: الكلمة 3 أحرف فأكثر، تبدأ بالحرف الصحيح، ولا تتكون من حرف واحد مكرر (مثل خخخخ)
+                let isNotRandomSpam = val.length > 0 && !/(.)\1{2,}/.test(val); 
+                let isValidLetter = (val.startsWith(currentBusLetter) || (currentBusLetter === 'أ' && /^[أإآا]/.test(val)));
+                
+                let pts = (val.length >= 3 && isValidLetter && isNotRandomSpam) ? 10 : 0;
+                roundScore += pts;
+                resultsHTML += `<div style="display:flex; justify-content:space-between; font-size:12px;"><span>${id}: <strong>${val || '---'}</strong></span><span>${pts} نقطة</span></div>`;
+            });
+
+            totalGameScore += roundScore;
+            resultsHTML += `<hr><div style="font-weight:bold; text-align:center;">إجمالي النقاط: ${totalGameScore}</div>`;
+            document.getElementById('busResultsContainer').innerHTML = resultsHTML;
+            showScreen('busResultsScreen');
+        }
+
+        window.startXOGame = function() {
+            xoBoardState = ["", "", "", "", "", "", "", "", ""];
+            xoCurrentTurn = "X";
+            isXOGameActive = true;
+            document.getElementById('xoStatusText').innerText = "دور اللاعب: (X)";
+            renderXOBoard();
+            showScreen('xoGameScreen');
+        }
+
+        function renderXOBoard() {
+            const cells = document.querySelectorAll('.xo-cell');
+            cells.forEach((cell, idx) => { cell.innerText = xoBoardState[idx]; });
+        }
+
+        window.makeXOMove = function(index) {
+            if (!isXOGameActive || xoBoardState[index] !== "") return;
+            xoBoardState[index] = xoCurrentTurn;
+            renderXOBoard();
+
+            if (checkXOWin(xoCurrentTurn)) {
+                document.getElementById('xoStatusText').innerText = `الفائز هو: (${xoCurrentTurn})`;
+                isXOGameActive = false;
+                return;
+            }
+            if (!xoBoardState.includes("")) {
+                document.getElementById('xoStatusText').innerText = "تعادل بين اللاعبين";
+                isXOGameActive = false;
+                return;
+            }
+            xoCurrentTurn = xoCurrentTurn === "X" ? "O" : "X";
+            document.getElementById('xoStatusText').innerText = `دور اللاعب: (${xoCurrentTurn})`;
+        }
+
+        function checkXOWin(player) {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            return wins.some(comb => comb.every(idx => xoBoardState[idx] === player));
+        }
+        window.resetXOGame = function() { startXOGame(); }
+
+        window.startGuessGame = function() {
+            targetSecretNumber = Math.floor(Math.random() * 50) + 1;
+            guessRemainingAttempts = 5;
+            document.getElementById('guessAttemptsLeft').innerText = guessRemainingAttempts;
+            document.getElementById('guessFeedbackMsg').innerText = "أنا أفكر في رقم بين 1 و 50، خمنه!";
+            document.getElementById('playerGuessInput').value = "";
+            document.getElementById('guessMsg').innerText = "";
+            showScreen('guessGameScreen');
+        }
+
+        window.submitGuessNumber = function() {
+            const inputVal = document.getElementById('playerGuessInput').value;
+            const guessMsg = document.getElementById('guessMsg');
+
+            if (inputVal === "") {
+                guessMsg.className = "inline-msg text-error";
+                guessMsg.innerText = "اكتب رقماً أولاً!";
+                return;
+            }
+            guessMsg.innerText = "";
+            const val = parseInt(inputVal);
+            guessRemainingAttempts--;
+            document.getElementById('guessAttemptsLeft').innerText = guessRemainingAttempts;
+
+            if (val === targetSecretNumber) {
+                document.getElementById('guessFeedbackMsg').innerHTML = `<span style="color: #4ade80;">ممتاز! عرفت الرقم الصحيح (${targetSecretNumber})</span>`;
+                return;
+            }
+            if (guessRemainingAttempts <= 0) {
+                document.getElementById('guessFeedbackMsg').innerHTML = `<span style="color: #ef4444;">انتهت محاولاتك! الرقم كان: ${targetSecretNumber}</span>`;
+                return;
+            }
+            document.getElementById('guessFeedbackMsg').innerText = val < targetSecretNumber ? "الرقم أعلى من كده" : "الرقم أقل من كده";
+        }
+
+        window.startImposterGame = function() {
+            currentSecretWord = secretWordList[Math.floor(Math.random() * secretWordList.length)];
+            isPlayerImposter = Math.random() < 0.33;
+            document.getElementById('imposterRoleStatus').innerText = "اضغط لإظهار دورك وسرك";
+            document.getElementById('imposterSecretWord').innerText = "[انقر فوق الزر]";
+            document.getElementById('imposterMsg').innerText = "";
+            showScreen('imposterGameScreen');
+        }
+
+        window.revealImposterRole = function() {
+            if (isPlayerImposter) {
+                document.getElementById('imposterRoleStatus').innerText = "أنت المحتال";
+                document.getElementById('imposterSecretWord').innerHTML = "<span style='color: #ef4444;'>ليس لديك كلمة سرية، حاول الخداع!</span>";
+            } else {
+                document.getElementById('imposterRoleStatus').innerText = "أنت لاعب بريء";
+                document.getElementById('imposterSecretWord').innerHTML = `الكلمة: <strong style="color: #4ade80;">${currentSecretWord}</strong>`;
+            }
+        }
+
+        window.startImposterVoting = function() {
+            const imposterMsg = document.getElementById('imposterMsg');
+            imposterMsg.className = "inline-msg text-success";
+            imposterMsg.innerText = isPlayerImposter ? "انتهت الجولة: كنت أنت المحتال!" : `انتهت الجولة: الكلمة كانت (${currentSecretWord})`;
+            setTimeout(() => {
+                startImposterGame();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
